@@ -50,3 +50,52 @@ func (h HandlerToLog) OnGoAway(peer string, reason uint8, nodeID eos.Checksum256
 	h.logger.Sugar().Errorf("OnGoAway %s by %d", peer, reason)
 	return nil
 }
+
+// MsgToChan type chan
+type MsgToChan struct {
+	Peer        string
+	CloseReason uint8 // if not zero, mean go away reason
+	Block       eos.SignedBlock
+}
+
+// HandlerToChannel handler to send msg to a channel
+type HandlerToChannel struct {
+	channel   chan<- MsgToChan
+	hasClosed bool
+}
+
+// NewHandlerToChannel create HandlerToChannel
+func NewHandlerToChannel(channel chan<- MsgToChan) *HandlerToChannel {
+	return &HandlerToChannel{
+		channel:   channel,
+		hasClosed: false,
+	}
+}
+
+// OnBlock block received
+func (h HandlerToChannel) OnBlock(peer string, msg *eos.SignedBlock) error {
+	if h.hasClosed {
+		return nil
+	}
+
+	h.channel <- MsgToChan{
+		Peer:  peer,
+		Block: *msg,
+	}
+	return nil
+}
+
+// OnGoAway goaway message received
+func (h HandlerToChannel) OnGoAway(peer string, reason uint8, nodeID eos.Checksum256) error {
+	if h.hasClosed {
+		return nil
+	}
+
+	h.channel <- MsgToChan{
+		Peer:        peer,
+		CloseReason: reason + 1,
+	}
+	close(h.channel)
+	h.hasClosed = true
+	return nil
+}

@@ -52,6 +52,7 @@ func main() {
 	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, log.Logger())
 
 	p2pPeers.RegHandler(p2p.NewHandlerLog(log.Logger()))
+	p2pPeers.RegHandler(startHandler())
 	err := p2pPeers.Start()
 
 	if err != nil {
@@ -64,4 +65,27 @@ func main() {
 	if err != nil {
 		log.Logger().Error("start err", zap.Error(err))
 	}
+}
+
+func startHandler() *p2p.HandlerToChannel {
+	channel := make(chan p2p.MsgToChan, 1024)
+	log.Logger().Info("start handler")
+	go func(ch chan p2p.MsgToChan) {
+		for {
+			msg, ok := <-ch
+			if !ok {
+				log.Logger().Error("handler chan close")
+				return
+			}
+
+			if msg.CloseReason != 0 {
+				log.Logger().Error("handler chan close", zap.Uint8("reason", msg.CloseReason-1))
+				return
+			}
+
+			log.Logger().Info("handler block", zap.String("block", msg.Block.String()))
+		}
+	}(channel)
+
+	return p2p.NewHandlerToChannel(channel)
 }
