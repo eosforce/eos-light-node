@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/eoscanada/eos-go"
+	"go.uber.org/zap"
 )
 
 type scheduleProducers struct {
@@ -14,6 +15,7 @@ type scheduleProducers struct {
 
 // ScheduleProducersDatas all schedule producers datas by version
 type ScheduleProducersDatas struct {
+	logger    *zap.Logger
 	schedules []scheduleProducers
 }
 
@@ -23,6 +25,8 @@ func (s *ScheduleProducersDatas) appendDatas(sp *scheduleProducers) error {
 	}
 
 	s.schedules = append(s.schedules, *sp)
+
+	s.logger.Info("new schedule producers version", zap.Uint32("version", sp.version))
 
 	return nil
 }
