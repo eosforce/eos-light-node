@@ -17,7 +17,7 @@ func NewBlockVerifier(logger *zap.Logger) *BlockVerifier {
 		logger: logger,
 		producers: ScheduleProducersDatas{
 			logger:    logger,
-			schedules: make([]scheduleProducers, 4096),
+			schedules: make([]scheduleProducers, 0, 4096),
 		},
 	}
 }

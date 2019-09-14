@@ -21,6 +21,7 @@ type ScheduleProducersDatas struct {
 
 func (s *ScheduleProducersDatas) appendDatas(sp *scheduleProducers) error {
 	if sp.version != uint32(len(s.schedules)+1) {
+		s.logger.Error("too early schedule version", zap.Uint32("version", sp.version), zap.Int("len", len(s.schedules)))
 		return errors.New("too early schedule version")
 	}
 
