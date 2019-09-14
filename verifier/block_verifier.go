@@ -14,7 +14,7 @@ type BlockVerifier struct {
 
 // NewBlockVerifier create a new BlockVerifier
 func NewBlockVerifier(logger *zap.Logger) *BlockVerifier {
-	return &BlockVerifier{
+	res := &BlockVerifier{
 		logger: logger,
 		producers: ScheduleProducersDatas{
 			logger:    logger,
@@ -25,6 +25,8 @@ func NewBlockVerifier(logger *zap.Logger) *BlockVerifier {
 			BlockNum: 1,
 		},
 	}
+	res.producers.Init()
+	return res
 }
 
 // Verify verifier block
@@ -35,13 +37,17 @@ func (v *BlockVerifier) Verify(block *eos.SignedBlock) error {
 		return nil
 	}
 
-	//if blockNum%1000 == 0 {
-	v.logger.Info("verify block", zap.Uint32("number", blockNum))
-	//}
+	if blockNum != 1 {
 
-	err := v.producers.OnBlock(block)
-	if err != nil {
-		return err
+		if blockNum%1000 == 0 {
+			v.logger.Info("verify block", zap.Uint32("number", blockNum))
+		}
+
+		err := v.producers.OnBlock(block)
+		if err != nil {
+			return err
+		}
+
 	}
 
 	v.status.ToNext(block)
