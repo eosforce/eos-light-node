@@ -21,8 +21,10 @@ func (b *BlockHeaderStatus) ToNext(block *eos.SignedBlock) {
 	b.Previous = id
 	b.BlockNum = block.BlockNumber() + 1
 
-	b.logger.Debug("to next",
-		zap.Uint32("num", b.BlockNum),
-		zap.String("previous", b.Previous.String()),
-		zap.String("block root merkle", b.BlockrootMerkle.GetRoot().String()))
+	/*
+		b.logger.Debug("to next",
+			zap.Uint32("num", b.BlockNum),
+			zap.String("previous", b.Previous.String()),
+			zap.String("block root merkle", b.BlockrootMerkle.GetRoot().String()))
+	*/
 }

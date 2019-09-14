@@ -86,22 +86,13 @@ func (s *ScheduleProducersDatas) GetScheduleProducer(version uint32, name eos.Ac
 	return eos.ProducerKey{}, errors.New("no producer in version datas")
 }
 
-func (s *ScheduleProducersDatas) GetScheduleProducersHash(version uint32) (eos.Checksum256, error) {
-	if version >= uint32(len(s.schedules)) {
-		return eos.Checksum256{}, errors.New("no version found")
-	}
-
-	return s.schedules[version].hash, nil
+func (s *ScheduleProducersDatas) GetScheduleProducersHash() eos.Checksum256 {
+	return s.schedules[len(s.schedules)-1].hash // must has value
 }
 
 // OnBlock on block to update datas
 func (s *ScheduleProducersDatas) OnBlock(msg *eos.SignedBlock) error {
 	if msg.NewProducers == nil {
-		hash, err := s.GetScheduleProducersHash(msg.ScheduleVersion)
-		if err != nil {
-			return err
-		}
-		s.logger.Debug("current ScheduleProducersDatas", zap.Uint32("version", msg.ScheduleVersion), zap.String("hash", hash.String()))
 		return nil
 	}
 
