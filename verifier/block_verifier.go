@@ -24,7 +24,11 @@ func NewBlockVerifier(logger *zap.Logger) *BlockVerifier {
 
 // Verify verifier block
 func (v *BlockVerifier) Verify(block *eos.SignedBlock) error {
-	v.logger.Debug("verify block", zap.Uint32("number", block.BlockNumber()))
+	blockNum := block.BlockNumber()
+
+	if blockNum%1000 == 0 {
+		v.logger.Info("verify block", zap.Uint32("number", block.BlockNumber()))
+	}
 
 	err := v.producers.OnBlock(block)
 	if err != nil {

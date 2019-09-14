@@ -13,7 +13,7 @@ import (
 )
 
 var chainID = flag.String("chain-id", "1c6ae7719a2a3b4ecb19584a30ff510ba1b6ded86e1fd8b8fc22f1179c622a32", "net chainID to connect to")
-var showLog = flag.Bool("v", true, "show detail log")
+var showLog = flag.Bool("v", false, "show detail log")
 var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")
 
@@ -50,7 +50,7 @@ func main() {
 	log.Logger().Sugar().Infof("start %v", *startNum)
 
 	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, log.Logger())
-
+	p2pPeers.RegHandler(p2p.NewHandlerLog(log.Logger()))
 	p2pPeers.RegHandler(startHandler())
 	err := p2pPeers.Start()
 
