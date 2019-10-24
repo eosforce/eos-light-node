@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/fanyang1988/eos-light-node/eosforce"
 	"github.com/fanyang1988/eos-light-node/p2p"
 	"github.com/fanyang1988/force-block-ev/log"
 	"go.uber.org/zap"
@@ -16,6 +17,9 @@ var chainID = flag.String("chain-id", "1c6ae7719a2a3b4ecb19584a30ff510ba1b6ded86
 var showLog = flag.Bool("v", false, "show detail log")
 var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")
+var genesisPath = flag.String("genesis", "./config/genesis.json", "genesis file path")
+
+var genesis *eosforce.Genesis
 
 // Wait wait for term signal, then stop the server
 func Wait() {
@@ -35,6 +39,14 @@ func main() {
 		log.EnableLogging(false)
 	}
 
+	var err error
+
+	genesis, err = eosforce.NewGenesisFromFile(*genesisPath)
+	if err != nil {
+		log.Logger().Error("load genesis err", zap.Error(err))
+		return
+	}
+
 	// from 9001 - 9020
 	const maxNumListen int = 1
 	peers := make([]string, 0, maxNumListen+1)
@@ -52,7 +64,7 @@ func main() {
 	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, log.Logger())
 	p2pPeers.RegHandler(p2p.NewHandlerLog(log.Logger()))
 	p2pPeers.RegHandler(startHandler())
-	err := p2pPeers.Start()
+	err = p2pPeers.Start()
 
 	if err != nil {
 		log.Logger().Error("start err", zap.Error(err))

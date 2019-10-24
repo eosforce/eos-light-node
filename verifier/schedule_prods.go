@@ -4,8 +4,9 @@ import (
 	"crypto/sha256"
 	"errors"
 
-	"github.com/eosforce/goeosforce"
+	eos "github.com/eosforce/goeosforce"
 	"github.com/eosforce/goeosforce/ecc"
+	"github.com/fanyang1988/eos-light-node/eosforce"
 	"go.uber.org/zap"
 )
 
@@ -36,15 +37,17 @@ func (s *ScheduleProducersDatas) appendDatas(sp *scheduleProducers) error {
 	return nil
 }
 
-func (s *ScheduleProducersDatas) Init() {
+func (s *ScheduleProducersDatas) Init(genesis *eosforce.Genesis) {
+	producers := make([]eos.ProducerKey, 0, len(genesis.InitialProducerList)+1)
+	for _, initProducer := range genesis.InitialProducerList {
+		producers = append(producers, eos.ProducerKey{
+			AccountName:     eos.AN(initProducer.Name),
+			BlockSigningKey: ecc.MustNewPublicKey(initProducer.Bpkey),
+		})
+	}
 	s.OnNewProducers(1, eos.ProducerSchedule{
-		Version: 0,
-		Producers: []eos.ProducerKey{
-			eos.ProducerKey{
-				AccountName:     eos.AN("eosio"),
-				BlockSigningKey: ecc.MustNewPublicKey("EOS8Znrtgwt8TfpmbVpTKvA2oB8Nqey625CLN8bCN3TEbgx86Dsvr"), // TODO: use genesis data
-			},
-		},
+		Version:   0,
+		Producers: producers,
 	})
 }
 

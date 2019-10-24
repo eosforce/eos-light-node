@@ -12,7 +12,7 @@ func startHandler() *p2p.HandlerToChannel {
 	log.Logger().Info("start handler")
 	go func(ch chan p2p.MsgToChan) {
 		logger, _ := zap.NewDevelopment()
-		verifier := verifier.NewBlockVerifier(logger)
+		verifier := verifier.NewBlockVerifier(genesis, logger)
 		for {
 			msg, ok := <-ch
 			if !ok {

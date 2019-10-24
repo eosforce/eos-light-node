@@ -3,7 +3,8 @@ package verifier
 import (
 	"errors"
 
-	"github.com/eosforce/goeosforce"
+	eos "github.com/eosforce/goeosforce"
+	"github.com/fanyang1988/eos-light-node/eosforce"
 	"go.uber.org/zap"
 )
 
@@ -12,10 +13,11 @@ type BlockVerifier struct {
 	logger    *zap.Logger
 	producers ScheduleProducersDatas
 	status    BlockHeaderStatus
+	genesis   eosforce.Genesis
 }
 
 // NewBlockVerifier create a new BlockVerifier
-func NewBlockVerifier(logger *zap.Logger) *BlockVerifier {
+func NewBlockVerifier(genesis *eosforce.Genesis, logger *zap.Logger) *BlockVerifier {
 	res := &BlockVerifier{
 		logger: logger,
 		producers: ScheduleProducersDatas{
@@ -26,8 +28,9 @@ func NewBlockVerifier(logger *zap.Logger) *BlockVerifier {
 			logger:   logger,
 			BlockNum: 1,
 		},
+		genesis: *genesis,
 	}
-	res.producers.Init()
+	res.producers.Init(&res.genesis)
 	return res
 }
 
@@ -97,7 +100,9 @@ func (v *BlockVerifier) Verify(block *eos.SignedBlock) error {
 			return err
 		}
 
-		v.logger.Info("verify block", zap.Uint32("number", blockNum))
+		if blockNum%1000 == 0 {
+			v.logger.Info("verify block", zap.Uint32("number", blockNum))
+		}
 	}
 
 	v.status.ToNext(block)
