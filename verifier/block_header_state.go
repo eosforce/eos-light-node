@@ -1,7 +1,7 @@
 package verifier
 
 import (
-	"github.com/eoscanada/eos-go"
+	"github.com/eosforce/goeosforce"
 	"github.com/eosspark/eos-go/chain/types"
 	"go.uber.org/zap"
 )

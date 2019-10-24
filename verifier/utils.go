@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/sha256"
 
-	"github.com/eoscanada/eos-go"
-	"github.com/eoscanada/eos-go/ecc"
+	"github.com/eosforce/goeosforce"
+	"github.com/eosforce/goeosforce/ecc"
 	"github.com/eosspark/eos-go/crypto"
 )
 

@@ -8,8 +8,7 @@ require (
 	github.com/codexnetwork/trunk v0.0.0-20190611091707-791c31dbe334 // indirect
 	github.com/eapache/channels v1.1.0 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
-	github.com/eoscanada/eos-go v0.8.16
-	github.com/eosforce/goeosforce v0.0.0-20190426084837-2f03154bca8f // indirect
+	github.com/eosforce/goeosforce v0.0.0-20190426084837-2f03154bca8f
 	github.com/eosforce/goforceio v0.0.0-20190524024903-f2174cc84832 // indirect
 	github.com/eosspark/eos-go v0.0.0-20190820132053-c626c17c72f9
 	github.com/fanyang1988/force-block-ev v0.0.0-20190610061029-d0cdc3025747

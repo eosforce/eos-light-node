@@ -1,7 +1,7 @@
 package p2p
 
 import (
-	eos "github.com/eoscanada/eos-go"
+	eos "github.com/eosforce/goeosforce"
 	"go.uber.org/zap"
 )
 

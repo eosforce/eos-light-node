@@ -3,7 +3,7 @@ package verifier
 import (
 	"errors"
 
-	"github.com/eoscanada/eos-go"
+	"github.com/eosforce/goeosforce"
 	"go.uber.org/zap"
 )
 

@@ -4,8 +4,8 @@ import (
 	"crypto/sha256"
 	"errors"
 
-	"github.com/eoscanada/eos-go"
-	"github.com/eoscanada/eos-go/ecc"
+	"github.com/eosforce/goeosforce"
+	"github.com/eosforce/goeosforce/ecc"
 	"go.uber.org/zap"
 )
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	eos "github.com/eoscanada/eos-go"
-	"github.com/eoscanada/eos-go/p2p"
+	eos "github.com/eosforce/goeosforce"
+	"github.com/eosforce/goeosforce/p2p"
 	"go.uber.org/zap"
 )
 
