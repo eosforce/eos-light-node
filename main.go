@@ -9,11 +9,10 @@ import (
 
 	"github.com/fanyang1988/eos-light-node/eosforce"
 	"github.com/fanyang1988/eos-light-node/p2p"
-	"github.com/fanyang1988/force-block-ev/log"
 	"go.uber.org/zap"
 )
 
-var chainID = flag.String("chain-id", "1c6ae7719a2a3b4ecb19584a30ff510ba1b6ded86e1fd8b8fc22f1179c622a32", "net chainID to connect to")
+var chainID = flag.String("chain-id", "bd61ae3a031e8ef2f97ee3b0e62776d6d30d4833c8f7c1645c657b149151004b", "net chainID to connect to")
 var showLog = flag.Bool("v", false, "show detail log")
 var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")
@@ -36,14 +35,14 @@ func main() {
 	flag.Parse()
 
 	if *showLog {
-		log.EnableLogging(false)
+		logger = newLogger(false)
 	}
 
 	var err error
 
 	genesis, err = eosforce.NewGenesisFromFile(*genesisPath)
 	if err != nil {
-		log.Logger().Error("load genesis err", zap.Error(err))
+		logger.Error("load genesis err", zap.Error(err))
 		return
 	}
 
@@ -59,21 +58,21 @@ func main() {
 		peers = append(peers, *p2pAddress)
 	}
 
-	log.Logger().Sugar().Infof("start %v", *startNum)
+	logger.Sugar().Infof("start %v", *startNum)
 
-	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, log.Logger())
-	p2pPeers.RegHandler(p2p.NewHandlerLog(log.Logger()))
+	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, logger)
+	p2pPeers.RegHandler(p2p.NewHandlerLog(logger))
 	p2pPeers.RegHandler(startHandler())
 	err = p2pPeers.Start()
 
 	if err != nil {
-		log.Logger().Error("start err", zap.Error(err))
+		logger.Error("start err", zap.Error(err))
 	}
 
 	Wait()
 
 	err = p2pPeers.CloseConnection()
 	if err != nil {
-		log.Logger().Error("start err", zap.Error(err))
+		logger.Error("start err", zap.Error(err))
 	}
 }

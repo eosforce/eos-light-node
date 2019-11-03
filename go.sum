@@ -10,8 +10,6 @@ github.com/eosforce/goeosforce v0.1.0 h1:W3vWjuCnZa24XmuCs6D2XquhhELcGuj78nMm3cJ
 github.com/eosforce/goeosforce v0.1.0/go.mod h1:uWBEQdXaQ+NFKWq4pdwvUfCWuszfHdYHQmFNtz0ExIU=
 github.com/eosspark/eos-go v0.0.0-20190820132053-c626c17c72f9 h1:r90M0KVIC45jwC5ydB1mxkOJmAk+QYMJlLYzGv+M2pw=
 github.com/eosspark/eos-go v0.0.0-20190820132053-c626c17c72f9/go.mod h1:zChLIgF7FQ/4BMc6DtZa7OzhUXw/o7Eputm6Xt8K+tk=
-github.com/fanyang1988/force-block-ev v0.0.0-20190610061029-d0cdc3025747 h1:R/oCcV5cYkxlDZvIrQv3ytC2ZHspwsEqbD5KPXS9vg4=
-github.com/fanyang1988/force-block-ev v0.0.0-20190610061029-d0cdc3025747/go.mod h1:G+8CL9P7wcGJDLxkwmvAh0nK4bGYvl6666Y1Qq3xFG4=
 github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=

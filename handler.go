@@ -3,15 +3,13 @@ package main
 import (
 	"github.com/fanyang1988/eos-light-node/p2p"
 	"github.com/fanyang1988/eos-light-node/verifier"
-	"github.com/fanyang1988/force-block-ev/log"
 	"go.uber.org/zap"
 )
 
 func startHandler() *p2p.HandlerToChannel {
 	channel := make(chan p2p.MsgToChan, 1024)
-	log.Logger().Info("start handler")
+	logger.Info("start handler")
 	go func(ch chan p2p.MsgToChan) {
-		logger, _ := zap.NewDevelopment()
 		verifier := verifier.NewBlockVerifier(genesis, logger)
 		for {
 			msg, ok := <-ch

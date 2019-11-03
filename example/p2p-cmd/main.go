@@ -8,7 +8,6 @@ import (
 	"syscall"
 
 	"github.com/fanyang1988/eos-light-node/p2p"
-	"github.com/fanyang1988/force-block-ev/log"
 	"go.uber.org/zap"
 )
 
@@ -28,11 +27,15 @@ func Wait() {
 	<-stopSignalChan
 }
 
+var (
+	logger = zap.NewNop()
+)
+
 func main() {
 	flag.Parse()
 
 	if *showLog {
-		log.EnableLogging(false)
+		logger, _ = zap.NewDevelopment()
 	}
 
 	// from 9001 - 9020
@@ -47,43 +50,43 @@ func main() {
 		peers = append(peers, *p2pAddress)
 	}
 
-	log.Logger().Sugar().Infof("start %v", *startNum)
+	logger.Sugar().Infof("start %v", *startNum)
 
-	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, log.Logger())
+	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, logger)
 
-	p2pPeers.RegHandler(p2p.NewHandlerLog(log.Logger()))
+	p2pPeers.RegHandler(p2p.NewHandlerLog(logger))
 	p2pPeers.RegHandler(startHandler())
 	err := p2pPeers.Start()
 
 	if err != nil {
-		log.Logger().Error("start err", zap.Error(err))
+		logger.Error("start err", zap.Error(err))
 	}
 
 	Wait()
 
 	err = p2pPeers.CloseConnection()
 	if err != nil {
-		log.Logger().Error("start err", zap.Error(err))
+		logger.Error("start err", zap.Error(err))
 	}
 }
 
 func startHandler() *p2p.HandlerToChannel {
 	channel := make(chan p2p.MsgToChan, 1024)
-	log.Logger().Info("start handler")
+	logger.Info("start handler")
 	go func(ch chan p2p.MsgToChan) {
 		for {
 			msg, ok := <-ch
 			if !ok {
-				log.Logger().Error("handler chan close")
+				logger.Error("handler chan close")
 				return
 			}
 
 			if msg.CloseReason != 0 {
-				log.Logger().Error("handler chan close", zap.Uint8("reason", msg.CloseReason-1))
+				logger.Error("handler chan close", zap.Uint8("reason", msg.CloseReason-1))
 				return
 			}
 
-			log.Logger().Info("handler block", zap.String("block", msg.Block.String()))
+			logger.Info("handler block", zap.String("block", msg.Block.String()))
 		}
 	}(channel)
 
