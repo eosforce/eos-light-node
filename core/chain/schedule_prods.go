@@ -4,8 +4,6 @@ import (
 	"crypto/sha256"
 	"errors"
 
-	eos "github.com/eosforce/goeosforce"
-	"github.com/eosforce/goeosforce/ecc"
 	"github.com/fanyang1988/eos-light-node/eosforce"
 	"go.uber.org/zap"
 )
@@ -14,7 +12,7 @@ type scheduleProducers struct {
 	version   uint32
 	blockNum  uint32
 	hash      Checksum256
-	producers []eos.ProducerKey
+	producers []ProducerKey
 }
 
 // ScheduleProducersDatas all schedule producers datas by version
@@ -38,21 +36,21 @@ func (s *ScheduleProducersDatas) appendDatas(sp *scheduleProducers) error {
 }
 
 func (s *ScheduleProducersDatas) Init(genesis *eosforce.Genesis) {
-	producers := make([]eos.ProducerKey, 0, len(genesis.InitialProducerList)+1)
+	producers := make([]ProducerKey, 0, len(genesis.InitialProducerList)+1)
 	for _, initProducer := range genesis.InitialProducerList {
-		producers = append(producers, eos.ProducerKey{
-			AccountName:     eos.AN(initProducer.Name),
-			BlockSigningKey: ecc.MustNewPublicKey(initProducer.Bpkey),
+		producers = append(producers, ProducerKey{
+			AccountName:     AN(initProducer.Name),
+			BlockSigningKey: MustNewPublicKey(initProducer.Bpkey),
 		})
 	}
-	s.OnNewProducers(1, eos.ProducerSchedule{
+	s.OnNewProducers(1, ProducerSchedule{
 		Version:   0,
 		Producers: producers,
 	})
 }
 
-func (s *ScheduleProducersDatas) OnNewProducers(blockNum uint32, n eos.ProducerSchedule) error {
-	spRaws, err := eos.MarshalBinary(n)
+func (s *ScheduleProducersDatas) OnNewProducers(blockNum uint32, n ProducerSchedule) error {
+	spRaws, err := MarshalBinary(n)
 	if err != nil {
 		return err
 	}
@@ -63,7 +61,7 @@ func (s *ScheduleProducersDatas) OnNewProducers(blockNum uint32, n eos.ProducerS
 	sp := &scheduleProducers{
 		version:   n.Version,
 		blockNum:  blockNum,
-		producers: make([]eos.ProducerKey, 0, 30),
+		producers: make([]ProducerKey, 0, 30),
 		hash:      h.Sum(nil),
 	}
 
@@ -75,9 +73,9 @@ func (s *ScheduleProducersDatas) OnNewProducers(blockNum uint32, n eos.ProducerS
 }
 
 // GetScheduleProducer get producer by version and account name
-func (s *ScheduleProducersDatas) GetScheduleProducer(version uint32, name eos.AccountName) (eos.ProducerKey, error) {
+func (s *ScheduleProducersDatas) GetScheduleProducer(version uint32, name AccountName) (ProducerKey, error) {
 	if version >= uint32(len(s.schedules)) {
-		return eos.ProducerKey{}, errors.New("no version found")
+		return ProducerKey{}, errors.New("no version found")
 	}
 
 	for _, sp := range s.schedules[version].producers {
@@ -86,15 +84,15 @@ func (s *ScheduleProducersDatas) GetScheduleProducer(version uint32, name eos.Ac
 		}
 	}
 
-	return eos.ProducerKey{}, errors.New("no producer in version datas")
+	return ProducerKey{}, errors.New("no producer in version datas")
 }
 
-func (s *ScheduleProducersDatas) GetScheduleProducersHash() eos.Checksum256 {
+func (s *ScheduleProducersDatas) GetScheduleProducersHash() Checksum256 {
 	return s.schedules[len(s.schedules)-1].hash // must has value
 }
 
 // OnBlock on block to update datas
-func (s *ScheduleProducersDatas) OnBlock(msg *eos.SignedBlock) error {
+func (s *ScheduleProducersDatas) OnBlock(msg *SignedBlock) error {
 	if msg.NewProducers == nil {
 		return nil
 	}

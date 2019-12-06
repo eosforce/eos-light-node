@@ -2,6 +2,7 @@ package chain
 
 import (
 	eos "github.com/eosforce/goeosforce"
+	"github.com/eosforce/goeosforce/ecc"
 	"github.com/eosspark/eos-go/chain/types"
 )
 
@@ -36,3 +37,28 @@ type Checksum256 = eos.Checksum256
 
 // IncrementalMerkle for block root Merkle
 type IncrementalMerkle = types.IncrementalMerkle
+
+// ProducerKey eos ProducerKey type
+type ProducerKey = eos.ProducerKey
+type PublicKey = ecc.PublicKey
+
+// ProducerSchedule eos ProducerSchedule type
+type ProducerSchedule = eos.ProducerSchedule
+
+type AccountName = eos.AccountName
+type PermissionName = eos.PermissionName
+type ActionName = eos.ActionName
+type TableName = eos.TableName
+type ScopeName = eos.ScopeName
+
+func AN(in string) AccountName    { return AccountName(in) }
+func ActN(in string) ActionName   { return ActionName(in) }
+func PN(in string) PermissionName { return PermissionName(in) }
+
+func MarshalBinary(v interface{}) ([]byte, error) {
+	return eos.MarshalBinary(v)
+}
+
+func MustNewPublicKey(pubKey string) PublicKey {
+	return ecc.MustNewPublicKey(pubKey)
+}
