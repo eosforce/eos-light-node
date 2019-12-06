@@ -1,8 +1,17 @@
 package chain
 
+import "go.uber.org/zap"
+
 // Chain eosc chain
 type Chain struct {
+	logger       *zap.Logger
 	PendingState pendingState `json:"pending"`
+}
+
+func New(logger *zap.Logger) *Chain {
+	return &Chain{
+		logger: logger,
+	}
 }
 
 // PushBlock try to append a block from net to chain,
@@ -14,6 +23,8 @@ func (c *Chain) PushBlock(b *BlockState) error {
 
 // startBlock init to ready to apply a block
 func (c *Chain) startBlock(b *BlockState, blockState blockStatus) error {
+	c.logger.Debug("startBlock",
+		zap.Uint32("num", b.BlockNum), zap.String("id", b.BlockID))
 	return nil
 }
 
