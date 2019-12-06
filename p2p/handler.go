@@ -1,14 +1,14 @@
 package p2p
 
 import (
-	eos "github.com/eosforce/goeosforce"
+	"github.com/fanyang1988/eos-light-node/core/chain"
 	"go.uber.org/zap"
 )
 
 // p2pHandler handler for p2p client
 type p2pHandler interface {
-	OnBlock(peer string, msg *eos.SignedBlock) error
-	OnGoAway(peer string, reason uint8, nodeID eos.Checksum256) error
+	OnBlock(peer string, msg *chain.SignedBlock) error
+	OnGoAway(peer string, reason uint8, nodeID chain.Checksum256) error
 }
 
 // HandlerToLog p2p msg handler to log msg received
@@ -24,7 +24,7 @@ func NewHandlerLog(l *zap.Logger) *HandlerToLog {
 }
 
 // OnBlock log block received
-func (h HandlerToLog) OnBlock(peer string, msg *eos.SignedBlock) error {
+func (h HandlerToLog) OnBlock(peer string, msg *chain.SignedBlock) error {
 	blockID, err := msg.BlockID()
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (h HandlerToLog) OnBlock(peer string, msg *eos.SignedBlock) error {
 }
 
 // OnGoAway log goaway message received
-func (h HandlerToLog) OnGoAway(peer string, reason uint8, nodeID eos.Checksum256) error {
+func (h HandlerToLog) OnGoAway(peer string, reason uint8, nodeID chain.Checksum256) error {
 	h.logger.Sugar().Errorf("OnGoAway %s by %d", peer, reason)
 	return nil
 }
@@ -55,7 +55,7 @@ func (h HandlerToLog) OnGoAway(peer string, reason uint8, nodeID eos.Checksum256
 type MsgToChan struct {
 	Peer        string
 	CloseReason uint8 // if not zero, mean go away reason
-	Block       eos.SignedBlock
+	Block       chain.SignedBlock
 }
 
 // HandlerToChannel handler to send msg to a channel
@@ -73,7 +73,7 @@ func NewHandlerToChannel(channel chan<- MsgToChan) *HandlerToChannel {
 }
 
 // OnBlock block received
-func (h HandlerToChannel) OnBlock(peer string, msg *eos.SignedBlock) error {
+func (h HandlerToChannel) OnBlock(peer string, msg *chain.SignedBlock) error {
 	if h.hasClosed {
 		return nil
 	}
@@ -86,7 +86,7 @@ func (h HandlerToChannel) OnBlock(peer string, msg *eos.SignedBlock) error {
 }
 
 // OnGoAway goaway message received
-func (h HandlerToChannel) OnGoAway(peer string, reason uint8, nodeID eos.Checksum256) error {
+func (h HandlerToChannel) OnGoAway(peer string, reason uint8, nodeID chain.Checksum256) error {
 	if h.hasClosed {
 		return nil
 	}

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	eos "github.com/eosforce/goeosforce"
 	"github.com/eosforce/goeosforce/p2p"
+	"github.com/fanyang1988/eos-light-node/core/chain"
 	"go.uber.org/zap"
 )
 
@@ -48,7 +48,7 @@ func NewP2PClient(name string, chainID string, startBlock uint32, peers []string
 
 func (p *P2PClient) handleImp(m p2pClientMsg) {
 	peer := m.peer
-	pkg, ok := m.msg.(*eos.Packet)
+	pkg, ok := m.msg.(*chain.Packet)
 	if !ok {
 		p.logger.Error("packet type err")
 		return
@@ -66,8 +66,8 @@ func (p *P2PClient) handleImp(m p2pClientMsg) {
 
 			var err error
 			switch pkg.Type {
-			case eos.GoAwayMessageType:
-				m, ok := pkg.P2PMessage.(*eos.GoAwayMessage)
+			case chain.GoAwayMessageType:
+				m, ok := pkg.P2PMessage.(*chain.GoAwayMessage)
 				if !ok {
 					p.logger.Error("msg type err by go away")
 					return
@@ -77,8 +77,8 @@ func (p *P2PClient) handleImp(m p2pClientMsg) {
 					zap.String("reason", m.Reason.String()),
 					zap.String("nodeId", m.NodeID.String()))
 				err = hh.OnGoAway(peer, uint8(m.Reason), m.NodeID)
-			case eos.SignedBlockType:
-				m, ok := pkg.P2PMessage.(*eos.SignedBlock)
+			case chain.SignedBlockType:
+				m, ok := pkg.P2PMessage.(*chain.SignedBlock)
 				if !ok {
 					p.logger.Error("msg type err by go away")
 					return

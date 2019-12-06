@@ -34,6 +34,7 @@ func NewBlockStateByBlock(sb *SignedBlock) *BlockState {
 
 // Checksum256 id
 type Checksum256 = eos.Checksum256
+type SHA256Bytes = Checksum256
 
 // IncrementalMerkle for block root Merkle
 type IncrementalMerkle = types.IncrementalMerkle
@@ -41,6 +42,7 @@ type IncrementalMerkle = types.IncrementalMerkle
 // ProducerKey eos ProducerKey type
 type ProducerKey = eos.ProducerKey
 type PublicKey = ecc.PublicKey
+type PrivateKey = ecc.PrivateKey
 
 // ProducerSchedule eos ProducerSchedule type
 type ProducerSchedule = eos.ProducerSchedule
@@ -62,3 +64,12 @@ func MarshalBinary(v interface{}) ([]byte, error) {
 func MustNewPublicKey(pubKey string) PublicKey {
 	return ecc.MustNewPublicKey(pubKey)
 }
+
+// for p2p
+type Packet = eos.Packet
+
+const GoAwayMessageType = eos.GoAwayMessageType
+
+type GoAwayMessage = eos.GoAwayMessage
+
+const SignedBlockType = eos.SignedBlockType

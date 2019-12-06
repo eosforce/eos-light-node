@@ -3,28 +3,28 @@ package p2p
 import (
 	"encoding/hex"
 
-	eos "github.com/eosforce/goeosforce"
-	"github.com/eosforce/goeosforce/ecc"
 	"github.com/pkg/errors"
+
+	"github.com/fanyang1988/eos-light-node/core/chain"
 )
 
 // Config config to codex-go
 type Config struct {
-	ChainID eos.SHA256Bytes
+	ChainID chain.SHA256Bytes
 	URL     string
 	Keys    map[string]accountKey
-	Prikeys []ecc.PrivateKey
+	Prikeys []chain.PrivateKey
 	IsDebug bool
 }
 
 type accountKey struct {
-	Name   eos.AccountName
-	PubKey ecc.PublicKey
-	PriKey ecc.PrivateKey
+	Name   chain.AccountName
+	PubKey chain.PublicKey
+	PriKey chain.PrivateKey
 }
 
 // ToSHA256Bytes from string to sha256
-func ToSHA256Bytes(in string) (eos.SHA256Bytes, error) {
+func ToSHA256Bytes(in string) (chain.SHA256Bytes, error) {
 	if len(in) != 64 {
 		return nil, errors.New("should be 64 hexadecimal characters")
 	}
@@ -34,5 +34,5 @@ func ToSHA256Bytes(in string) (eos.SHA256Bytes, error) {
 		return nil, err
 	}
 
-	return eos.SHA256Bytes(bytes), nil
+	return chain.SHA256Bytes(bytes), nil
 }
