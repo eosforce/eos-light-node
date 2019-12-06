@@ -67,9 +67,9 @@ func MustNewPublicKey(pubKey string) PublicKey {
 
 // for p2p
 type Packet = eos.Packet
-
-const GoAwayMessageType = eos.GoAwayMessageType
-
 type GoAwayMessage = eos.GoAwayMessage
 
-const SignedBlockType = eos.SignedBlockType
+const (
+	SignedBlockType   = eos.SignedBlockType
+	GoAwayMessageType = eos.GoAwayMessageType
+)
