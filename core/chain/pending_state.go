@@ -9,3 +9,10 @@ type pendingState struct {
 	PreviousBlockNum uint32            `json:"previous_num"`
 	BlockrootMerkle  IncrementalMerkle `json:"blockroot_merkle"`
 }
+
+func (p *pendingState) update(block *SignedBlock) {
+	id, _ := block.BlockID()
+	p.BlockrootMerkle.Append(ToSha256(id))
+	p.Previous = id
+	p.BlockNum = block.BlockNumber() + 1
+}

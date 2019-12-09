@@ -4,6 +4,7 @@ import (
 	eos "github.com/eosforce/goeosforce"
 	"github.com/eosforce/goeosforce/ecc"
 	"github.com/eosspark/eos-go/chain/types"
+	chaintype "github.com/fanyang1988/eos-light-node/eosforce"
 )
 
 // SignedBlock Signed block in chain, for a light node, all block will be signed from others
@@ -11,6 +12,8 @@ type SignedBlock = eos.SignedBlock
 
 // BlockState block detail state from a signed block data and the chain state
 type BlockState = eos.BlockState
+
+type BlockHeader = eos.BlockHeader
 
 // NewBlockStateByBlock just tmp imp
 func NewBlockStateByBlock(sb *SignedBlock) *BlockState {
@@ -65,6 +68,8 @@ func MustNewPublicKey(pubKey string) PublicKey {
 	return ecc.MustNewPublicKey(pubKey)
 }
 
+var TypeSize = eos.TypeSize
+
 // for p2p
 type Packet = eos.Packet
 type GoAwayMessage = eos.GoAwayMessage
@@ -73,3 +78,6 @@ const (
 	SignedBlockType   = eos.SignedBlockType
 	GoAwayMessageType = eos.GoAwayMessageType
 )
+
+// Genesis genesis datas for chain
+type Genesis = chaintype.Genesis

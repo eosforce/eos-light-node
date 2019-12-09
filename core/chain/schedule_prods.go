@@ -4,7 +4,6 @@ import (
 	"crypto/sha256"
 	"errors"
 
-	"github.com/fanyang1988/eos-light-node/eosforce"
 	"go.uber.org/zap"
 )
 
@@ -35,7 +34,7 @@ func (s *ScheduleProducersDatas) appendDatas(sp *scheduleProducers) error {
 	return nil
 }
 
-func (s *ScheduleProducersDatas) Init(genesis *eosforce.Genesis) {
+func (s *ScheduleProducersDatas) Init(genesis *Genesis) {
 	producers := make([]ProducerKey, 0, len(genesis.InitialProducerList)+1)
 	for _, initProducer := range genesis.InitialProducerList {
 		producers = append(producers, ProducerKey{
@@ -43,13 +42,13 @@ func (s *ScheduleProducersDatas) Init(genesis *eosforce.Genesis) {
 			BlockSigningKey: MustNewPublicKey(initProducer.Bpkey),
 		})
 	}
-	s.OnNewProducers(1, ProducerSchedule{
+	s.onNewProducers(1, ProducerSchedule{
 		Version:   0,
 		Producers: producers,
 	})
 }
 
-func (s *ScheduleProducersDatas) OnNewProducers(blockNum uint32, n ProducerSchedule) error {
+func (s *ScheduleProducersDatas) onNewProducers(blockNum uint32, n ProducerSchedule) error {
 	spRaws, err := MarshalBinary(n)
 	if err != nil {
 		return err
@@ -93,9 +92,9 @@ func (s *ScheduleProducersDatas) GetScheduleProducersHash() Checksum256 {
 
 // OnBlock on block to update datas
 func (s *ScheduleProducersDatas) OnBlock(msg *SignedBlock) error {
-	if msg.NewProducers == nil {
+	if msg.NewProducers == nil || msg.BlockNumber() == 1 {
 		return nil
 	}
 
-	return s.OnNewProducers(msg.BlockNumber(), msg.NewProducers.ProducerSchedule)
+	return s.onNewProducers(msg.BlockNumber(), msg.NewProducers.ProducerSchedule)
 }
