@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var chainID = flag.String("chain-id", "a1c3bfe884d9cad5dcd496a09bca555771fd4e6b1fea164542018482b39ea3f4", "net chainID to connect to")
+var chainID = flag.String("chain-id", "9cfd53268469e4751ce77ca186897488e677d0a91e96c8b68f7a44280dae2693", "net chainID to connect to")
 var showLog = flag.Bool("v", false, "show detail log")
 var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")
