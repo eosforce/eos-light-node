@@ -34,6 +34,7 @@ func (s *ScheduleProducersDatas) appendDatas(sp *scheduleProducers) error {
 	return nil
 }
 
+// Init init producers in chain boot
 func (s *ScheduleProducersDatas) Init(genesis *Genesis) {
 	producers := make([]ProducerKey, 0, len(genesis.InitialProducerList)+1)
 	for _, initProducer := range genesis.InitialProducerList {
@@ -86,6 +87,7 @@ func (s *ScheduleProducersDatas) GetScheduleProducer(version uint32, name Accoun
 	return ProducerKey{}, errors.New("no producer in version datas")
 }
 
+// GetScheduleProducersHash get schedule producers hash for check
 func (s *ScheduleProducersDatas) GetScheduleProducersHash() Checksum256 {
 	return s.schedules[len(s.schedules)-1].hash // must has value
 }

@@ -15,6 +15,7 @@ func ToSha256(sum Checksum256) crypto.Sha256 {
 	return *crypto.NewSha256Byte([]byte(sum))
 }
 
+// GetBlockHeaderHash get block header for verify
 func GetBlockHeaderHash(block *BlockHeader) Checksum256 {
 	raws, _ := MarshalBinary(block)
 
@@ -24,6 +25,7 @@ func GetBlockHeaderHash(block *BlockHeader) Checksum256 {
 	return h.Sum(nil)
 }
 
+// HashCheckSumPair get sha256 hash from c1+c2
 func HashCheckSumPair(c1, c2 Checksum256) Checksum256 {
 	h := sha256.New()
 
@@ -42,6 +44,7 @@ func HashCheckSumPair(c1, c2 Checksum256) Checksum256 {
 	return h.Sum(nil)
 }
 
+// HashCheckSumPairH256 get sha256 hash from c1+c2, c2 from eospack
 func HashCheckSumPairH256(c1 Checksum256, c2 crypto.Sha256) Checksum256 {
 	h := sha256.New()
 
@@ -56,6 +59,7 @@ func HashCheckSumPairH256(c1 Checksum256, c2 crypto.Sha256) Checksum256 {
 	return h.Sum(nil)
 }
 
+// IsSamePubKey p1 == p2
 func IsSamePubKey(p1, p2 PublicKey) bool {
 	return p1.Curve == p2.Curve && bytes.Equal(p1.Content, p2.Content)
 }

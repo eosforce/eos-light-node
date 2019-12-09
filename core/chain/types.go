@@ -13,6 +13,7 @@ type SignedBlock = eos.SignedBlock
 // BlockState block detail state from a signed block data and the chain state
 type BlockState = eos.BlockState
 
+// BlockHeader header data for block
 type BlockHeader = eos.BlockHeader
 
 // NewBlockStateByBlock just tmp imp
@@ -37,6 +38,8 @@ func NewBlockStateByBlock(sb *SignedBlock) *BlockState {
 
 // Checksum256 id
 type Checksum256 = eos.Checksum256
+
+// SHA256Bytes for sha256 from eosio lib
 type SHA256Bytes = Checksum256
 
 // IncrementalMerkle for block root Merkle
@@ -44,38 +47,65 @@ type IncrementalMerkle = types.IncrementalMerkle
 
 // ProducerKey eos ProducerKey type
 type ProducerKey = eos.ProducerKey
+
+// PublicKey ecc.PublicKey
 type PublicKey = ecc.PublicKey
+
+// PrivateKey ecc.PrivateKey
 type PrivateKey = ecc.PrivateKey
 
 // ProducerSchedule eos ProducerSchedule type
 type ProducerSchedule = eos.ProducerSchedule
 
+// AccountName eos.AccountName
 type AccountName = eos.AccountName
+
+// PermissionName eos.PermissionName
 type PermissionName = eos.PermissionName
+
+// ActionName eos.ActionName
 type ActionName = eos.ActionName
+
+// TableName eos.TableName
 type TableName = eos.TableName
+
+// ScopeName eos.ScopeName
 type ScopeName = eos.ScopeName
 
-func AN(in string) AccountName    { return AccountName(in) }
-func ActN(in string) ActionName   { return ActionName(in) }
+// AN from string to account name
+func AN(in string) AccountName { return AccountName(in) }
+
+// ActN from string to action name
+func ActN(in string) ActionName { return ActionName(in) }
+
+// PN from string to permission name
 func PN(in string) PermissionName { return PermissionName(in) }
 
+// MarshalBinary call eos MarshalBinary
 func MarshalBinary(v interface{}) ([]byte, error) {
 	return eos.MarshalBinary(v)
 }
 
+// MustNewPublicKey call ecc MustNewPublicKey
 func MustNewPublicKey(pubKey string) PublicKey {
 	return ecc.MustNewPublicKey(pubKey)
 }
 
+// TypeSize size for eos types
 var TypeSize = eos.TypeSize
 
 // for p2p
+
+// Packet eos.Packet
 type Packet = eos.Packet
+
+// GoAwayMessage eos.GoAwayMessage
 type GoAwayMessage = eos.GoAwayMessage
 
 const (
-	SignedBlockType   = eos.SignedBlockType
+	// SignedBlockType eos.SignedBlockType
+	SignedBlockType = eos.SignedBlockType
+	// GoAwayMessageType eos.GoAwayMessageType
 	GoAwayMessageType = eos.GoAwayMessageType
 )
 

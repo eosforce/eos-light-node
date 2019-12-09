@@ -10,14 +10,14 @@ import (
 	"go.uber.org/zap"
 )
 
-// P2PClient a manager for peers to diff p2p node
-type P2PClient struct {
+// Client a manager for peers to diff p2p node
+type Client struct {
 	*p2pClientImp
 }
 
 // NewP2PClient new p2p peers from cfg
-func NewP2PClient(name string, chainID string, startBlock uint32, peers []string, logger *zap.Logger) *P2PClient {
-	p := &P2PClient{
+func NewP2PClient(name string, chainID string, startBlock uint32, peers []string, logger *zap.Logger) *Client {
+	p := &Client{
 		&p2pClientImp{},
 	}
 
@@ -46,7 +46,7 @@ func NewP2PClient(name string, chainID string, startBlock uint32, peers []string
 	return p
 }
 
-func (p *P2PClient) handleImp(m p2pClientMsg) {
+func (p *Client) handleImp(m p2pClientMsg) {
 	peer := m.peer
 	pkg, ok := m.msg.(*chain.Packet)
 	if !ok {
@@ -102,7 +102,7 @@ func (p *P2PClient) handleImp(m p2pClientMsg) {
 }
 
 // Handle handler for p2p clients
-func (p *P2PClient) Handle(envelope *p2p.Envelope) {
+func (p *Client) Handle(envelope *p2p.Envelope) {
 	p.onMsg(p2pClientMsg{
 		peer: envelope.Sender.Address,
 		msg:  envelope.Packet,
