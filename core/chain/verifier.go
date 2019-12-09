@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"errors"
 
-	eos "github.com/eosforce/goeosforce"
 	"github.com/eosspark/eos-go/crypto"
 	"go.uber.org/zap"
 )
@@ -65,7 +64,7 @@ func IsSamePubKey(p1, p2 PublicKey) bool {
 }
 
 // getSigDigest get sig digest for verifier
-func (c *Chain) getSigDigest(block *eos.SignedBlock) (eos.Checksum256, error) {
+func (c *Chain) getSigDigest(block *SignedBlock) (Checksum256, error) {
 	headerHash := GetBlockHeaderHash(&block.BlockHeader)
 	scheduleProducersHash := c.ScheduleProducers.GetScheduleProducersHash()
 	blockrootMerkle := c.PendingState.BlockrootMerkle.GetRoot()
