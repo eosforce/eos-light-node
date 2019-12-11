@@ -12,7 +12,7 @@ type pendingState struct {
 
 func (p *pendingState) update(block *SignedBlock) {
 	id, _ := block.BlockID()
-	p.BlockrootMerkle.Append(ToSha256(id))
+	p.BlockrootMerkle.Append(id)
 	p.Previous = id
 	p.BlockNum = block.BlockNumber() + 1
 }

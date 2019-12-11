@@ -5,14 +5,8 @@ import (
 	"crypto/sha256"
 	"errors"
 
-	"github.com/eosspark/eos-go/crypto"
 	"go.uber.org/zap"
 )
-
-// ToSha256 From eos-go Checksum256 to geos Sha256
-func ToSha256(sum Checksum256) crypto.Sha256 {
-	return *crypto.NewSha256Byte([]byte(sum))
-}
 
 // GetBlockHeaderHash get block header for verify
 func GetBlockHeaderHash(block *BlockHeader) Checksum256 {
@@ -43,21 +37,6 @@ func HashCheckSumPair(c1, c2 Checksum256) Checksum256 {
 	return h.Sum(nil)
 }
 
-// HashCheckSumPairH256 get sha256 hash from c1+c2, c2 from eospack
-func HashCheckSumPairH256(c1 Checksum256, c2 crypto.Sha256) Checksum256 {
-	h := sha256.New()
-
-	if len(c1) == 0 {
-		h.Write(bytes.Repeat([]byte{0}, TypeSize.Checksum256))
-	} else {
-		h.Write(c1)
-	}
-
-	h.Write(c2.Bytes())
-
-	return h.Sum(nil)
-}
-
 // IsSamePubKey p1 == p2
 func IsSamePubKey(p1, p2 PublicKey) bool {
 	return p1.Curve == p2.Curve && bytes.Equal(p1.Content, p2.Content)
@@ -69,7 +48,7 @@ func (c *Chain) getSigDigest(block *SignedBlock) (Checksum256, error) {
 	scheduleProducersHash := c.ScheduleProducers.GetScheduleProducersHash()
 	blockrootMerkle := c.PendingState.BlockrootMerkle.GetRoot()
 
-	headerAndBmroot := HashCheckSumPairH256(headerHash, blockrootMerkle)
+	headerAndBmroot := HashCheckSumPair(headerHash, blockrootMerkle)
 	sigDigest := HashCheckSumPair(headerAndBmroot, scheduleProducersHash)
 
 	/*

@@ -3,7 +3,6 @@ package chain
 import (
 	eos "github.com/eosforce/goeosforce"
 	"github.com/eosforce/goeosforce/ecc"
-	"github.com/eosspark/eos-go/chain/types"
 	chaintype "github.com/fanyang1988/eos-light-node/eosforce"
 )
 
@@ -41,9 +40,6 @@ type Checksum256 = eos.Checksum256
 
 // SHA256Bytes for sha256 from eosio lib
 type SHA256Bytes = Checksum256
-
-// IncrementalMerkle for block root Merkle
-type IncrementalMerkle = types.IncrementalMerkle
 
 // ProducerKey eos ProducerKey type
 type ProducerKey = eos.ProducerKey
@@ -111,3 +107,9 @@ const (
 
 // Genesis genesis datas for chain
 type Genesis = chaintype.Genesis
+
+// Action chain action
+type Action = eos.Action
+
+// Transaction chain transaction
+type Transaction = eos.Transaction
