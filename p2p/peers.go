@@ -1,6 +1,7 @@
 package p2p
 
 import (
+	"context"
 	"encoding/hex"
 	"fmt"
 	"runtime/debug"
@@ -16,7 +17,7 @@ type Client struct {
 }
 
 // NewP2PClient new p2p peers from cfg
-func NewP2PClient(name string, chainID string, startBlock uint32, peers []string, logger *zap.Logger) *Client {
+func NewP2PClient(ctx context.Context, name string, chainID string, startBlock uint32, peers []string, logger *zap.Logger) *Client {
 	p := &Client{
 		&p2pClientImp{},
 	}
@@ -44,6 +45,11 @@ func NewP2PClient(name string, chainID string, startBlock uint32, peers []string
 	}
 
 	return p
+}
+
+// Wait wait client to stop
+func (p *Client) Wait() {
+	p.wg.Wait()
 }
 
 func (p *Client) handleImp(m p2pClientMsg) {

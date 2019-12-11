@@ -1,18 +1,21 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 
+	chainp2p "github.com/eosforce/goeosforce/p2p"
+	"github.com/fanyang1988/eos-light-node/core/chain"
 	"github.com/fanyang1988/eos-light-node/eosforce"
 	"github.com/fanyang1988/eos-light-node/p2p"
 	"go.uber.org/zap"
 )
 
-var chainID = flag.String("chain-id", "9cfd53268469e4751ce77ca186897488e677d0a91e96c8b68f7a44280dae2693", "net chainID to connect to")
+var chainID = flag.String("chain-id", "ffd003d3f088b544f898c34abec3819ec47a3d7ab0134bb0cd13aff018ce556b", "net chainID to connect to")
 var showLog = flag.Bool("v", false, "show detail log")
 var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")
@@ -20,8 +23,8 @@ var genesisPath = flag.String("genesis", "./config/genesis.json", "genesis file 
 
 var genesis *eosforce.Genesis
 
-// Wait wait for term signal, then stop the server
-func Wait() {
+// waitClose wait for term signal, then stop the server
+func waitClose() {
 	stopSignalChan := make(chan os.Signal, 1)
 	signal.Notify(stopSignalChan,
 		syscall.SIGINT,
@@ -36,6 +39,7 @@ func main() {
 
 	if *showLog {
 		logger = newLogger(false)
+		chainp2p.EnableP2PLogging()
 	}
 
 	var err error
@@ -60,19 +64,36 @@ func main() {
 
 	logger.Sugar().Infof("start %v", *startNum)
 
-	p2pPeers := p2p.NewP2PClient("p2p-peer", *chainID, 1, peers, logger)
+	ctx, cancelFunc := context.WithCancel(context.Background())
+
+	// TODO: now it is just for test
+	chains := chain.New(ctx, logger)
+	if err := chains.Init(genesis); err != nil {
+		logger.Error("chains init error", zap.Error(err))
+		return
+	}
+
+	p2pPeers := p2p.NewP2PClient(ctx, "p2p-peer", *chainID, 1, peers, logger)
 	p2pPeers.RegHandler(p2p.NewHandlerLog(logger))
-	p2pPeers.RegHandler(startHandler())
-	err = p2pPeers.Start()
+	p2pPeers.RegHandler(startHandler(ctx, chains))
 
+	err = p2pPeers.Start(ctx)
 	if err != nil {
 		logger.Error("start err", zap.Error(err))
 	}
 
-	Wait()
+	// wait close node
+	waitClose()
 
-	err = p2pPeers.CloseConnection()
-	if err != nil {
-		logger.Error("start err", zap.Error(err))
-	}
+	// cancel context
+	logger.Info("start close node")
+	cancelFunc()
+
+	logger.Info("wait p2p peers closed")
+	p2pPeers.Wait()
+
+	logger.Info("wait chain closed")
+	chains.Wait()
+
+	logger.Info("light node closed success")
 }

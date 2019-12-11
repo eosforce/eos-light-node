@@ -1,21 +1,26 @@
 package chain
 
 import (
+	"context"
+
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
 // Chain eosc chain
 type Chain struct {
-	logger            *zap.Logger
+	logger    *zap.Logger
+	publisher *messagePublisher
+
 	PendingState      pendingState           `json:"pending"`
 	ScheduleProducers ScheduleProducersDatas `json:"scheduleProducers"`
 }
 
 // New create chain
-func New(logger *zap.Logger) *Chain {
+func New(ctx context.Context, logger *zap.Logger) *Chain {
 	return &Chain{
-		logger: logger,
+		logger:    logger,
+		publisher: newMessagePublisher(ctx, logger),
 		ScheduleProducers: ScheduleProducersDatas{
 			logger:    logger,
 			schedules: make([]scheduleProducers, 0, 4096),
@@ -28,6 +33,10 @@ func (c *Chain) Init(genesis *Genesis) error {
 	c.ScheduleProducers.Init(genesis)
 	c.PendingState.BlockNum = 1
 	return nil
+}
+
+func (c *Chain) Wait() {
+	c.publisher.Wait()
 }
 
 // PushBlock try to append a block from net to chain,
@@ -84,6 +93,8 @@ func (c *Chain) finalizeBlock(b *BlockState) error {
 
 	// update pending with assembled_block data, which is gen by building block data
 	c.PendingState.update(b.SignedBlock)
+
+	c.publisher.OnCommittedBlock(b.SignedBlock)
 
 	return nil
 }

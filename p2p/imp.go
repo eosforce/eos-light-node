@@ -1,6 +1,7 @@
 package p2p
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -30,7 +31,8 @@ type p2pClientImp struct {
 	handlers  []p2pHandler
 	msgChan   chan p2pClientMsg
 	wg        sync.WaitGroup
-	chanWg    sync.WaitGroup
+	isClosing bool
+	clientsWg sync.WaitGroup
 	hasClosed bool
 	mutex     sync.RWMutex
 	logger    *zap.Logger
@@ -50,21 +52,38 @@ func (p *p2pClientImp) setHandlerImp(h p2pHandlerInterface) {
 	p.handlerImp = h
 }
 
-func (p *p2pClientImp) Start() error {
-	p.chanWg.Add(1)
+func (p *p2pClientImp) Start(ctx context.Context) error {
+	p.wg.Add(1)
 	go func() {
-		defer p.chanWg.Done()
+		defer p.wg.Done()
 		for {
-			isStop := p.Loop()
-			if isStop {
-				p.logger.Info("p2p peers stop")
-				return
+			select {
+			case ev, ok := <-p.msgChan:
+				if !ok {
+					p.logger.Warn("p2p peers msg chan closed")
+					return
+				}
+				p.logger.Debug("handler msg")
+				p.handlerImp.handleImp(ev)
+
+			case <-ctx.Done():
+				if !p.isClosing {
+					p.isClosing = true
+					p.logger.Info("p2p client imp start stop")
+					p.closeConnection()
+					p.logger.Debug("wait clients close")
+					//p.clientsWg.Wait()
+					//p.logger.Info("close msg channel")
+					//close(p.msgChan)
+					return
+				}
+			default:
 			}
 		}
 	}()
 
 	for idx, client := range p.clients {
-		p.createClient(idx, client)
+		p.createClient(ctx, idx, client)
 	}
 
 	return nil
@@ -76,73 +95,52 @@ func (p *p2pClientImp) IsClosed() bool {
 	return p.hasClosed
 }
 
-func (p *p2pClientImp) createClient(idx int, client p2pClientInterface) {
-	p.wg.Add(1)
+func (p *p2pClientImp) createClient(ctx context.Context, idx int, client p2pClientInterface) {
+	p.clientsWg.Add(1)
 	go func() {
-		defer p.wg.Done()
+		defer p.clientsWg.Done()
 		for {
 			p.logger.Info("create connect", zap.Int("client", idx))
 			err := client.Start()
 
 			// check when after close client
 			if p.IsClosed() {
+				p.logger.Info("client closed", zap.Int("client", idx))
 				return
 			}
 
 			if err != nil {
-				p.logger.Error("client err", zap.Int("client", idx), zap.Error(err))
+				p.logger.Error("client start err", zap.Int("client", idx), zap.Error(err))
 			}
 
+			p.logger.Info("client wait to reconnect", zap.Int("client", idx))
+
+			// wait to reconnect
 			time.Sleep(3 * time.Second)
 
 			// check when after sleep
 			if p.IsClosed() {
+				p.logger.Info("client closed", zap.Int("client", idx))
 				return
 			}
 		}
 	}()
 }
 
-func (p *p2pClientImp) CloseConnection() error {
-	p.logger.Warn("start close")
-
+func (p *p2pClientImp) closeConnection() error {
 	p.mutex.Lock()
 	p.hasClosed = true
 	p.mutex.Unlock()
 
 	for idx, client := range p.clients {
-		go func(i int, cli p2pClientInterface) {
-			err := cli.CloseConnection()
-			if err != nil {
-				p.logger.Error("client close err", zap.Int("client", i), zap.Error(err))
-			}
-			p.logger.Info("client close", zap.Int("client", i))
-		}(idx, client)
+		err := client.CloseConnection()
+		if err != nil {
+			p.logger.Error("client close err", zap.Int("client", idx), zap.Error(err))
+		}
+		p.logger.Info("client close", zap.Int("client", idx))
 	}
-	p.wg.Wait()
-	p.msgChan <- p2pClientMsg{
-		isStop: true,
-	}
-	close(p.msgChan)
-	p.chanWg.Wait()
 
 	return nil
-}
-
-func (p *p2pClientImp) Loop() bool {
-	ev, ok := <-p.msgChan
-	if ev.isStop {
-		return true
-	}
-
-	if !ok {
-		p.logger.Warn("p2p peers msg chan closed")
-		return true
-	}
-
-	p.handlerImp.handleImp(ev)
-
-	return false
 }
 
 func (p *p2pClientImp) onMsg(envelope p2pClientMsg) {
@@ -150,14 +148,10 @@ func (p *p2pClientImp) onMsg(envelope p2pClientMsg) {
 }
 
 func (p *p2pClientImp) RegHandler(handler p2pHandler) {
-	p.mutex.RLock()
-	defer p.mutex.RUnlock()
 	p.handlers = append(p.handlers, handler)
 }
 
 func (p *p2pClientImp) SetReadTimeout(readTimeout time.Duration) {
-	p.mutex.RLock()
-	defer p.mutex.RUnlock()
 	for _, peer := range p.clients {
 		peer.SetReadTimeout(readTimeout)
 	}
