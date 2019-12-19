@@ -8,14 +8,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	chainp2p "github.com/eosforce/goeosforce/p2p"
+	chainp2p "github.com/fanyang1988/eos-p2p/p2p"
 	"github.com/fanyang1988/eos-light-node/core/chain"
 	"github.com/fanyang1988/eos-light-node/eosforce"
 	"github.com/fanyang1988/eos-light-node/p2p"
 	"go.uber.org/zap"
 )
 
-var chainID = flag.String("chain-id", "ffd003d3f088b544f898c34abec3819ec47a3d7ab0134bb0cd13aff018ce556b", "net chainID to connect to")
+var chainID = flag.String("chain-id", "76eab2b704733e933d0e4eb6cc24d260d9fbbe5d93d760392e97398f4e301448", "net chainID to connect to")
 var showLog = flag.Bool("v", false, "show detail log")
 var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")

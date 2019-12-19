@@ -2,12 +2,11 @@ package p2p
 
 import (
 	"context"
-	"encoding/hex"
 	"fmt"
 	"runtime/debug"
 
-	"github.com/eosforce/goeosforce/p2p"
 	"github.com/fanyang1988/eos-light-node/core/chain"
+	"github.com/fanyang1988/eos-p2p/p2p"
 	"go.uber.org/zap"
 )
 
@@ -25,24 +24,28 @@ func NewP2PClient(ctx context.Context, name string, chainID string, startBlock u
 	p.init(name, chainID, peers, logger)
 	p.setHandlerImp(p)
 
-	cID, err := hex.DecodeString(chainID)
+	peersCfg := make([]*p2p.PeerCfg, 0, len(peers))
+	for _, p := range peers {
+		peersCfg = append(peersCfg, &p2p.PeerCfg{
+			Address: p,
+		})
+	}
+
+	//Logger.Info("P2P Client ", zap.String("peer", *peer), zap.String("chainID", *chainID))
+	client, err := p2p.NewClient(
+		ctx,
+		chainID,
+		peersCfg,
+		p2p.WithNeedSync(startBlock),
+		p2p.WithHandler(p2p.StringLoggerHandler),
+		p2p.WithHandler(p),
+	)
+
 	if err != nil {
-		p.logger.Error("decode chain id err", zap.Error(err))
 		panic(err)
 	}
 
-	for idx, peer := range peers {
-		p.logger.Debug("new peer client", zap.Int("idx", idx), zap.String("peer", peer))
-		client := p2p.NewClient(
-			p2p.NewOutgoingPeer(peer, fmt.Sprintf("%s-%02d", name, idx), &p2p.HandshakeInfo{
-				ChainID:      cID,
-				HeadBlockNum: startBlock,
-			}),
-			true,
-		)
-		client.RegisterHandler(p)
-		p.clients = append(p.clients, client)
-	}
+	p.client = client
 
 	return p
 }
@@ -50,6 +53,11 @@ func NewP2PClient(ctx context.Context, name string, chainID string, startBlock u
 // Wait wait client to stop
 func (p *Client) Wait() {
 	p.wg.Wait()
+}
+
+// Name imp handler
+func (p *Client) Name() string {
+	return "node-p2p"
 }
 
 func (p *Client) handleImp(m p2pClientMsg) {
