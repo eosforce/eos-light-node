@@ -52,6 +52,7 @@ func NewP2PClient(ctx context.Context, name string, chainID string, startBlock u
 
 // Wait wait client to stop
 func (p *Client) Wait() {
+	p.client.Wait()
 	p.wg.Wait()
 }
 

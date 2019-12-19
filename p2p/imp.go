@@ -9,6 +9,7 @@ import (
 
 type p2pClientInterface interface {
 	Start(ctx context.Context) error
+	Wait()
 }
 
 type p2pClientMsg struct {
@@ -77,7 +78,7 @@ func (p *p2pClientImp) Start(ctx context.Context) error {
 		}
 	}()
 
-	return p.client.Start(ctx)
+	return nil
 }
 
 func (p *p2pClientImp) IsClosed() bool {
