@@ -8,14 +8,13 @@ import (
 	"os/signal"
 	"syscall"
 
-	chainp2p "github.com/fanyang1988/eos-p2p/p2p"
 	"github.com/fanyang1988/eos-light-node/core/chain"
 	"github.com/fanyang1988/eos-light-node/eosforce"
-	"github.com/fanyang1988/eos-light-node/p2p"
+	"github.com/fanyang1988/eos-p2p/p2p"
 	"go.uber.org/zap"
 )
 
-var chainID = flag.String("chain-id", "76eab2b704733e933d0e4eb6cc24d260d9fbbe5d93d760392e97398f4e301448", "net chainID to connect to")
+var chainID = flag.String("chain-id", "bd61ae3a031e8ef2f97ee3b0e62776d6d30d4833c8f7c1645c657b149151004b", "net chainID to connect to")
 var showLog = flag.Bool("v", false, "show detail log")
 var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")
@@ -39,7 +38,7 @@ func main() {
 
 	if *showLog {
 		logger = newLogger(false)
-		chainp2p.EnableP2PLogging()
+		//p2p.EnableP2PLogging()
 	}
 
 	var err error
@@ -51,7 +50,7 @@ func main() {
 	}
 
 	// from 9001 - 9020
-	const maxNumListen int = 1
+	const maxNumListen int = 5
 	peers := make([]string, 0, maxNumListen+1)
 
 	if *p2pAddress == "" {
@@ -73,13 +72,27 @@ func main() {
 		return
 	}
 
-	p2pPeers := p2p.NewP2PClient(ctx, "p2p-peer", *chainID, 1, peers, logger)
-	p2pPeers.RegHandler(p2p.NewHandlerLog(logger))
-	p2pPeers.RegHandler(startHandler(ctx, chains))
+	peersCfg := make([]*p2p.PeerCfg, 0, len(peers))
+	for _, p := range peers {
+		peersCfg = append(peersCfg, &p2p.PeerCfg{
+			Address: p,
+		})
+	}
 
-	err = p2pPeers.Start(ctx)
+	client, err := p2p.NewClient(
+		ctx,
+		*chainID,
+		peersCfg,
+		p2p.WithNeedSync(1),
+		//p2p.WithHandler(p2p.StringLoggerHandler),
+		p2p.WithHandler(&chainP2PHandler{
+			chain: chains,
+		}),
+	)
+
 	if err != nil {
-		logger.Error("start err", zap.Error(err))
+		logger.Error("p2p start error", zap.Error(err))
+		return
 	}
 
 	// wait close node
@@ -90,7 +103,7 @@ func main() {
 	cancelFunc()
 
 	logger.Info("wait p2p peers closed")
-	p2pPeers.Wait()
+	client.Wait()
 
 	logger.Info("wait chain closed")
 	chains.Wait()

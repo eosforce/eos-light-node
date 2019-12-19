@@ -8,6 +8,7 @@ github.com/eoscanada/eos-go v0.8.16/go.mod h1:RKrm2XzZEZWxSMTRqH5QOyJ1fb/qKEjs2i
 github.com/eosforce/goeosforce v0.1.0 h1:W3vWjuCnZa24XmuCs6D2XquhhELcGuj78nMm3cJyYyU=
 github.com/eosforce/goeosforce v0.1.0/go.mod h1:uWBEQdXaQ+NFKWq4pdwvUfCWuszfHdYHQmFNtz0ExIU=
 github.com/eosspark/eos-go v0.0.0-20190820132053-c626c17c72f9/go.mod h1:zChLIgF7FQ/4BMc6DtZa7OzhUXw/o7Eputm6Xt8K+tk=
+github.com/fanyang1988/eos-p2p v0.1.0 h1:EeIMN58/fVBLw9qhkeOzOF2YysCjt+4Sk+C5BV/NdPs=
 github.com/fanyang1988/eos-p2p v0.1.1-0.20191219091917-9f994eb50fa4 h1:KsrDndQ6KbBcn8VQiIGQ/EGR+l7HegspH++4NyUQpoE=
 github.com/fanyang1988/eos-p2p v0.1.1-0.20191219091917-9f994eb50fa4/go.mod h1:3tTFvaQQqLs3+Q/iCGfQEA7Z/lENVsbvDiTkbr+xkcI=
 github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=

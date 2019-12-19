@@ -81,7 +81,10 @@ func (m *messagePublisher) onCmdMsg(msg *msgPublisherCmdMsg) {
 }
 
 func (m *messagePublisher) onCommitedBlock(blk *SignedBlock) {
-	m.logger.Debug("on committed block", zap.Uint32("num", blk.BlockNumber()))
+	n := blk.BlockNumber()
+	if n%1000 == 0 {
+		m.logger.Debug("on committed block", zap.Uint32("num", blk.BlockNumber()))
+	}
 }
 
 // AppendActHandler append a action handler

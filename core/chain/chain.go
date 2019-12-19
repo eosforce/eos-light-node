@@ -51,8 +51,8 @@ func (c *Chain) PushBlock(b *BlockState) error {
 
 // startBlock init to ready to apply a block
 func (c *Chain) startBlock(b *BlockState, blockState blockStatus) error {
-	c.logger.Debug("startBlock",
-		zap.Uint32("num", b.BlockNum), zap.String("id", b.BlockID))
+	//c.logger.Debug("startBlock",
+	//	zap.Uint32("num", b.BlockNum), zap.String("id", b.BlockID))
 
 	// update pending data, init building block data
 
