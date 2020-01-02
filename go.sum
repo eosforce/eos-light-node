@@ -7,10 +7,16 @@ github.com/eapache/queue v1.1.0/go.mod h1:6eCeP0CKFpHLu8blIFXhExK/dRa7WDZfr6jVFP
 github.com/eoscanada/eos-go v0.8.16/go.mod h1:RKrm2XzZEZWxSMTRqH5QOyJ1fb/qKEjs2ix1aQl0sk4=
 github.com/eosforce/goeosforce v0.1.0 h1:W3vWjuCnZa24XmuCs6D2XquhhELcGuj78nMm3cJyYyU=
 github.com/eosforce/goeosforce v0.1.0/go.mod h1:uWBEQdXaQ+NFKWq4pdwvUfCWuszfHdYHQmFNtz0ExIU=
+github.com/eosforce/goeosforce v0.1.1-0.20191231085450-a9163f430856 h1:BGybFALwtABv2/KVtjuSgJ3NVmAbN3MiJjx8ZawwIYA=
+github.com/eosforce/goeosforce v0.1.1-0.20191231085450-a9163f430856/go.mod h1:uWBEQdXaQ+NFKWq4pdwvUfCWuszfHdYHQmFNtz0ExIU=
 github.com/eosspark/eos-go v0.0.0-20190820132053-c626c17c72f9/go.mod h1:zChLIgF7FQ/4BMc6DtZa7OzhUXw/o7Eputm6Xt8K+tk=
 github.com/fanyang1988/eos-p2p v0.1.0 h1:EeIMN58/fVBLw9qhkeOzOF2YysCjt+4Sk+C5BV/NdPs=
 github.com/fanyang1988/eos-p2p v0.1.1-0.20191219091917-9f994eb50fa4 h1:KsrDndQ6KbBcn8VQiIGQ/EGR+l7HegspH++4NyUQpoE=
 github.com/fanyang1988/eos-p2p v0.1.1-0.20191219091917-9f994eb50fa4/go.mod h1:3tTFvaQQqLs3+Q/iCGfQEA7Z/lENVsbvDiTkbr+xkcI=
+github.com/fanyang1988/eos-p2p v0.1.1-0.20200102084014-fcb8195a7d20 h1:3vgRapNxZAASlEu60vretV+tO/Jlk3FgG+2NLZ5TneE=
+github.com/fanyang1988/eos-p2p v0.1.1-0.20200102084014-fcb8195a7d20/go.mod h1:+9LdnX603joCs+kQ7F/XYzF3ibNHn51NRGQ9NRV/v3I=
+github.com/fanyang1988/eos-p2p v0.1.1-0.20200102091727-9a40834fee06 h1:y20PKj2Gj/jnrNhWxMib6jW4E4U613LEJXN/XaBLNK0=
+github.com/fanyang1988/eos-p2p v0.1.1-0.20200102091727-9a40834fee06/go.mod h1:+9LdnX603joCs+kQ7F/XYzF3ibNHn51NRGQ9NRV/v3I=
 github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/julienschmidt/httprouter v1.3.0/go.mod h1:JR6WtHb+2LUe8TCKY3cZOxFyyO8IZAc4RVcycCCAKdM=
@@ -25,6 +31,8 @@ github.com/tidwall/gjson v1.3.2/go.mod h1:P256ACg0Mn+j1RXIDXoss50DeIABTYK1PULOJH
 github.com/tidwall/match v1.0.1/go.mod h1:LujAq0jyVjBy028G1WhWfIzbpQfMO8bBZ6Tyb0+pL9E=
 github.com/tidwall/pretty v1.0.0/go.mod h1:XNkn88O1ChpSDQmQeStsy+sBenx6DDtFZJxhVysOjyk=
 github.com/tidwall/sjson v1.0.4/go.mod h1:bURseu1nuBkFpIES5cz6zBtjmYeOQmEESshn7VpF15Y=
+go.etcd.io/bbolt v1.3.3 h1:MUGmc65QhB3pIlaQ5bB4LwqSj6GIonVJXpZiaKNyaKk=
+go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.uber.org/atomic v1.4.0 h1:cxzIVoETapQEqDhQu3QfnvXAV4AlzcvUCxkVUFw3+EU=
 go.uber.org/atomic v1.4.0/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/multierr v1.2.0/go.mod h1:wR5kodmAFQ0UK8QlbwjlSNy0Z68gJhDJUG5sjR94q/0=
@@ -35,6 +43,7 @@ golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc h1:c0o/qxkaO2LF5t6fQrT4b5
 golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/sys v0.0.0-20190412213103-97732733099d h1:+R4KGOnez64A81RvjARKc4UT5/tI9ujCIVX+P5KiHuI=
 golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=

@@ -11,6 +11,7 @@ import (
 	"github.com/fanyang1988/eos-light-node/core/chain"
 	"github.com/fanyang1988/eos-light-node/eosforce"
 	"github.com/fanyang1988/eos-p2p/p2p"
+	"github.com/fanyang1988/eos-p2p/store"
 	"go.uber.org/zap"
 )
 
@@ -79,12 +80,19 @@ func main() {
 		})
 	}
 
+	storer, err := store.NewBBoltStorer(logger, *chainID, "./blocks.db", false)
+	if err != nil {
+		logger.Error("new storer error", zap.Error(err))
+		return
+	}
+
 	client, err := p2p.NewClient(
 		ctx,
 		*chainID,
 		peersCfg,
 		p2p.WithNeedSync(1),
-		//p2p.WithHandler(p2p.StringLoggerHandler),
+		p2p.WithLogger(logger),
+		p2p.WithStorer(storer),
 		p2p.WithHandler(&chainP2PHandler{
 			chain: chains,
 		}),
@@ -107,6 +115,10 @@ func main() {
 
 	logger.Info("wait chain closed")
 	chains.Wait()
+
+	logger.Info("wait storer closed")
+	storer.Close()
+	storer.Wait()
 
 	logger.Info("light node closed success")
 }
