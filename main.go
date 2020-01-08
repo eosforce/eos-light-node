@@ -8,10 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/fanyang1988/eos-light-node/core/chain"
-	"github.com/fanyang1988/eos-light-node/eosforce"
-	"github.com/fanyang1988/eos-p2p/p2p"
-	"github.com/fanyang1988/eos-p2p/store"
+	"github.com/eosforce/eos-light-node/core/chain"
+	"github.com/eosforce/eos-light-node/eosio"
+	"github.com/eosforce/eos-p2p/p2p"
+	"github.com/eosforce/eos-p2p/store"
 	"go.uber.org/zap"
 )
 
@@ -21,7 +21,7 @@ var startNum = flag.Int("num", 1, "start block num to sync")
 var p2pAddress = flag.String("p2p", "", "p2p address")
 var genesisPath = flag.String("genesis", "./config/genesis.json", "genesis file path")
 
-var genesis *eosforce.Genesis
+var genesis *chain.Genesis
 
 // waitClose wait for term signal, then stop the server
 func waitClose() {
@@ -44,7 +44,7 @@ func main() {
 
 	var err error
 
-	genesis, err = eosforce.NewGenesisFromFile(*genesisPath)
+	genesis, err = eosio.NewGenesisFromFile(*genesisPath)
 	if err != nil {
 		logger.Error("load genesis err", zap.Error(err))
 		return

@@ -1,16 +1,44 @@
 package chain
 
 import (
-	eos "github.com/eosforce/goeosforce"
-	"github.com/eosforce/goeosforce/ecc"
-	chaintype "github.com/fanyang1988/eos-light-node/eosforce"
+	eos "github.com/eoscanada/eos-go"
+	"github.com/eoscanada/eos-go/ecc"
+	chaintype "github.com/eosforce/eos-light-node/eosio"
 )
 
 // SignedBlock Signed block in chain, for a light node, all block will be signed from others
 type SignedBlock = eos.SignedBlock
 
+type MerkleRoot struct {
+	ActiveNodes []string `json:"_active_nodes"`
+	NodeCount   uint32   `json:"_node_count"`
+}
+
+type PendingSchedule struct {
+	ScheduleLIBNum uint32            `json:"schedule_lib_num"`
+	ScheduleHash   eos.HexBytes      `json:"schedule_hash"`
+	Schedule       *ProducerSchedule `json:"schedule"`
+}
+
+type EOSNameOrUint32 interface{}
+
 // BlockState block detail state from a signed block data and the chain state
-type BlockState = eos.BlockState
+type BlockState struct {
+	BlockID                          string                    `json:"id"`
+	BlockNum                         uint32                    `json:"block_num"`
+	DPoSProposedIrreversibleBlockNum uint32                    `json:"dpos_proposed_irreversible_blocknum"`
+	DPoSIrreversibleBlockNum         uint32                    `json:"dpos_irreversible_blocknum"`
+	ActiveSchedule                   *eos.ProducerSchedule     `json:"active_schedule"`
+	BlockrootMerkle                  *MerkleRoot               `json:"blockroot_merkle"`
+	ProducerToLastProduced           [][2]EOSNameOrUint32      `json:"producer_to_last_produced"`
+	ProducerToLastImpliedIRB         [][2]EOSNameOrUint32      `json:"producer_to_last_implied_irb"`
+	BlockSigningKey                  ecc.PublicKey             `json:"block_signing_key"`
+	ConfirmCount                     []uint32                  `json:"confirm_count"`
+	PendingSchedule                  *PendingSchedule          `json:"pending_schedule"`
+	ActivatedProtocolFeatures        map[string][]eos.HexBytes `json:"activated_protocol_features"`
+	SignedBlock                      *eos.SignedBlock          `json:"block"`
+	Validated                        bool                      `json:"validated"`
+}
 
 // BlockHeader header data for block
 type BlockHeader = eos.BlockHeader

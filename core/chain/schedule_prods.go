@@ -36,13 +36,13 @@ func (s *ScheduleProducersDatas) appendDatas(sp *scheduleProducers) error {
 
 // Init init producers in chain boot
 func (s *ScheduleProducersDatas) Init(genesis *Genesis) {
-	producers := make([]ProducerKey, 0, len(genesis.InitialProducerList)+1)
-	for _, initProducer := range genesis.InitialProducerList {
-		producers = append(producers, ProducerKey{
-			AccountName:     AN(initProducer.Name),
-			BlockSigningKey: MustNewPublicKey(initProducer.Bpkey),
-		})
-	}
+	producers := make([]ProducerKey, 0, 1)
+
+	producers = append(producers, ProducerKey{
+		AccountName:     AN("eosio"),
+		BlockSigningKey: MustNewPublicKey(genesis.InitialKey),
+	})
+
 	s.onNewProducers(1, ProducerSchedule{
 		Version:   0,
 		Producers: producers,
