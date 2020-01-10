@@ -64,3 +64,13 @@ Currently EOSIO light nodes are still under development, and the following funct
 - Improve API interface to be as compatible as possible with nodeos
 - Optimize concurrent computing capabilities and speed up the synchronization process
 - Support eos-vm for the implementation of some actions
+
+## 5. Thanks!
+
+- Block One
+- https://github.com/eoscanada
+- https://github.com/eosspark
+
+## 6. License
+
+MIT
