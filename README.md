@@ -4,15 +4,15 @@
 
 ## 0. Introduction
 
-`EOS Light Node` is a [eosio](https://github.com/EOSIO/eos) node implementation develop by golang. Unlike the full node of eosio based on nodeos, the node by eos-light-node is only Verify the block header of the eosio chain.The actions in block will not be executed, so the light nodes have low requirements.
+`EOS Light Node` is an [eosio](https://github.com/EOSIO/eos) node implementation developed by golang. Unlike the full node of eosio based on nodeos, the node by eos-light-node only verify the block header of the eosio chain, and the actions in block will not be executed. So the light nodes have low requirements for operating environment.
 
 ## 1. Motivation
 
-EOSIO's block header structure supports lightweight nodes, but currently there is no reliable lightweight node implementation in the EOSIO community. In the EOSIO network, a full node has very high requirements for machine performance, network,  and operation  maintenance. At present, there are very few full nodes available in the EOSIO network. This means that the current EOSIO network structure is strongly centralized. It is has a big impact to stability, and it also makes developers harder to develop and deploy DAPP on the chain.
+EOSIO's block header structure supports lightweight nodes, but currently there is no reliable lightweight node implementation in the EOSIO community. In the EOSIO network, a full node has very high requirements for machine performance, network,  and operation  maintenance. At present, there are very few full nodes available in the EOSIO network. This means that the current EOSIO network structure is strongly centralized, which has a big impact to stability, and also makes it harder to develop and deploy DAPP on the chain.
 
-Although EOSIO's plugin architecture can allow nodes to expand functions, but nodes have higher requirements for machine performance, at the same time, developing plugins based on C ++ requires high development thresholds. Therefore, EOSIO has few expansion tools, which indirectly make development of DAPP more Difficulty.
+Although EOSIO's plugin architecture can allow nodes to expand functions, nodes have higher requirements for machine performance. At the same time, developing plugins based on C ++ requires high development thresholds. Therefore, EOSIO has few expansion tools, which indirectly make development of DAPP more difficult.
 
-At present, an important direction of chain development is to support cross-chain. EOSIO supports adding side chains based on IBC. IBC needs to be based on full nodes so that users can obtain the proof data which based on the merkle tree. However, due to the cost of a full node is too high, even if it is unrealistic to require a small number of validators and phishers to start a full node. This will make some theoretical support schemes can not work well as it is uneconomical. If all services only provided by full nodes, then the entire system will be very vulnerable.
+At present, an important direction of chain development is to support cross-chain. EOSIO supports adding side chains based on IBC. IBC needs to be based on full nodes so that users can obtain the proof data which based on the merkle tree. However, due to the high cost of a full node, it is unrealistic to require a small number of validators and phishers to start a full node. This will make some theoretical support schemes can not work well as it is uneconomical. If all services only provided by full nodes, then the entire system will be very vulnerable.
 
 To sum up the above problems, we need a sufficiently lightweight EOSIO node implement.Light nodes should be easy to expand and secondary development and ensure the verification of the blocks.
 
@@ -58,7 +58,7 @@ Here assumed that the available p2p url of eosio is `127.0.0.1:9001` and the cha
 
 Currently EOSIO light nodes are still under development, and the following functions will be completed in the future:
 
-- Improve block storage implementation, compatible with nodeos' block db
+- Improve block storage implementation to be compatible with nodeos' block db
 - Implement irreversible block determination algorithm consistent with nodos
 - Support other nodes to synchronize blocks and transactions from light nodes
 - Improve API interface to be as compatible as possible with nodeos
