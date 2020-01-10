@@ -73,4 +73,4 @@ Currently EOSIO light nodes are still under development, and the following funct
 
 ## 6. License
 
-MIT
+Apache License 2.0
